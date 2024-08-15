@@ -80,15 +80,15 @@ class UserService implements UserServiceInterface
      */
     public function store(array $attributes)
     {
-        $validated = Validator::make($attributes, $this->rules())->validate();
+//        $validated = Validator::make($attributes, $this->rules())->validate();
 
-        $validated['password'] = $this->hash($validated['password']);
+        $attributes['password'] = $this->hash($attributes['password']);
 
         if (isset($attributes['photo']) && $attributes['photo'] instanceof UploadedFile) {
-            $validated['photo'] = $this->upload($attributes['photo']);
+            $attributes['photo'] = $this->upload($attributes['photo']);
         }
 
-        return $this->model->create($validated);
+        return $this->model->create($attributes);
     }
 
     /**
@@ -112,20 +112,20 @@ class UserService implements UserServiceInterface
      */
     public function update(int $id, array $attributes): bool
     {
-        $validated = Validator::make($attributes, $this->rules($id))->validate();
+//        $validated = Validator::make($attributes, $this->rules($id))->validate();
+
         $user = $this->model->findOrFail($id);
 
-        if (isset($validated['password'])) {
-            $validated['password'] = $this->hash($validated['password']);
+        if (isset($attributes['password'])) {
+            $attributes['password'] = $this->hash($attributes['password']);
         } else {
-            unset($validated['password']);
+            unset($attributes['password']);
         }
 
         if (isset($attributes['photo']) && $attributes['photo'] instanceof UploadedFile) {
-            $validated['photo'] = $this->upload($attributes['photo']);
+            $attributes['photo'] = $this->upload($attributes['photo']);
         }
-
-        return $user->update($validated);
+        return $user->update($attributes);
     }
 
     /**

@@ -15,6 +15,11 @@ class UserServiceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    /**
+     * The UserService instance.
+     *
+     * @var \App\Services\UserService
+     */
     protected $userService;
 
     protected function setUp(): void
@@ -62,7 +67,7 @@ class UserServiceTest extends TestCase
             'username' => 'johnsmith',
             'email' => 'john@example.com',
             'password' => 'password',
-            'password_confirmation' => 'password',
+//            'password_confirmation' => 'password',
             'photo' => $photo,
         ];
 
