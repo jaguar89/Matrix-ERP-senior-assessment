@@ -12,6 +12,8 @@ use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -26,7 +28,7 @@ class UserController extends Controller
      */
     public function trashed()
     {
-        $users = User::onlyTrashed()->orderBy('deleted_at','desc')->paginate(10);
+        $users = User::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
         return view('pages.users.trashed', compact('users'));
     }
 
@@ -74,7 +76,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('pages.users.show' , compact('user'));
+        return view('pages.users.show', compact('user'));
     }
 
     /**
@@ -82,7 +84,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('pages.users.update' , compact('user'));
+        return view('pages.users.update', compact('user'));
     }
 
     /**
@@ -95,15 +97,15 @@ class UserController extends Controller
             'firstname' => ['required', 'string', 'max:255'],
             'middlename' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255',  Rule::unique(User::class)->ignore($user->id)],
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-            'password' => ['nullable', 'string', 'confirmed',  Password::defaults()],
+            'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
         ]);
 
         if ($request->has('password')) {
             $validated['password'] = Hash::make($validated['password']);
-        }else{
+        } else {
             unset($validated['password']);
         }
 
