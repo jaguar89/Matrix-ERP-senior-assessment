@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\UserSaved;
+use App\Models\User;
 use App\Services\UserService;
 use App\Services\UserServiceInterface;
 use Illuminate\Support\Facades\Route;

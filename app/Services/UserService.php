@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\enums\PrefixName;
+use App\Models\Detail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -214,5 +216,27 @@ class UserService implements UserServiceInterface
     public function upload(UploadedFile $file)
     {
         return $file->store('users', 'public');
+    }
+
+    /**
+     * Save the user's details.
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
+    public function saveUserDetails(User $user)
+    {
+        DB::transaction(function() use($user){
+
+            $details = [
+                ['key' => 'Full name', 'value' => $user->fullName, 'type' => 'bio', 'user_id' => $user->id],
+                ['key' => 'Middle Initial' , 'value' => $user->middleInitial, 'type' => 'bio', 'user_id' => $user->id],
+                ['key' => 'Avatar' , 'value' => $user->avatar, 'type' => 'bio', 'user_id' => $user->id],
+                ['key' => 'Gender' , 'value' => $user->gender, 'type' => 'bio', 'user_id' => $user->id],
+            ];
+
+            Detail::where('user_id' , $user->id)->delete();
+            Detail::insert($details);
+        });
     }
 }

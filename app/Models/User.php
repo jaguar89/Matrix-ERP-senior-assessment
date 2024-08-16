@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\enums\PrefixName;
+use App\Events\UserSaved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -45,6 +46,26 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        parent::booted();
+        static::saved(function ($user) {
+            UserSaved::dispatch($user);
+        });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function details()
+    {
+        return $this->hasMany(Detail::class);
+    }
 
     /**
      * Retrieve the default photo from storage.
@@ -92,4 +113,23 @@ class User extends Authenticatable
     {
         return $this->middlename ? strtoupper(substr($this->middlename, 0, 1)) . '.' : '';
     }
+
+    /**
+     * Retrieve the user's gender
+     *
+     * @return string
+     */
+    public function getGenderAttribute(): string
+    {
+        switch ($this->prefixname) {
+            case PrefixName::Mr:
+                return 'male';
+            case PrefixName::Mrs:
+            case PrefixName::Ms:
+                return 'female';
+            default:
+                return '';
+        }
+    }
+
 }

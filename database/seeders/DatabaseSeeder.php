@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'username' => 'Matrix-ERP',
-            'firstname' => 'Super',
+            'firstname' => 'Matrix',
+            'middlename' => 'Super',
             'lastname' => 'Admin',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
