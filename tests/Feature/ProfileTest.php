@@ -31,7 +31,7 @@ class ProfileTest extends TestCase
         $this->actingAs($user);
 
         $component = Volt::test('profile.update-profile-information-form')
-            ->set('name', 'Test User')
+            ->set('firstname', 'Test User')
             ->set('email', 'test@example.com')
             ->call('updateProfileInformation');
 
@@ -41,7 +41,7 @@ class ProfileTest extends TestCase
 
         $user->refresh();
 
-        $this->assertSame('Test User', $user->name);
+        $this->assertSame('Test User', $user->firstname);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
     }
@@ -53,7 +53,7 @@ class ProfileTest extends TestCase
         $this->actingAs($user);
 
         $component = Volt::test('profile.update-profile-information-form')
-            ->set('name', 'Test User')
+            ->set('firstname', 'Test User')
             ->set('email', $user->email)
             ->call('updateProfileInformation');
 
@@ -79,7 +79,8 @@ class ProfileTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertGuest();
-        $this->assertNull($user->fresh());
+//        $this->assertNull($user->fresh());
+        $this->assertSoftDeleted('users', ['id' => $user->id]);
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void
